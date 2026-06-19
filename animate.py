@@ -1,11 +1,20 @@
 import glob
 import os
+import argparse
 import re
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
 
-DATA_DIR = "output"
+# Command-Line argument parsing
+parser = argparse.ArgumentParser(description='LBM Fluid Dynamics Dashboard Stitcher')
+parser.add_argument('--mode', type=str, required=True, choices=['cpu', 'gpu'], 
+                    help='Simulation execution mode (cpu or gpu)')
+args = parser.parse_args()
+
+# Set base paths based on execution mode
+DATA_DIR = os.path.join("output", args.mode)
+master_output_path = os.path.join("output", f"fluid_simulation_{args.mode}.gif")
 
 # Obstacle configurations
 SCENE_KEYS = [
@@ -27,7 +36,7 @@ for scene in SCENE_KEYS:
     files.sort(key=lambda f: int(re.sub(r"\D", "", f)))
 
     if not files:
-        exit()
+        exit(1)
 
     scene_files[scene] = files
 
@@ -47,17 +56,10 @@ for scene in SCENE_KEYS:
 # Ensure frame counts match perfectly across all channels
 num_frames = min(len(scene_files[s]) for s in SCENE_KEYS)
 
-# Label the master plot title
-cpu_binary = "./naive_d2q9"
-gpu_binary = "./optimized_d2q9"
-mode_title = "LBM Fluid Dynamics Dashboard"
-if os.path.exists(cpu_binary) and os.path.exists(gpu_binary):
-    if os.path.getmtime(gpu_binary) > os.path.getmtime(cpu_binary):
-        mode_title += " - Optimized Parallel GPU"
-    else:
-        mode_title += " - Sequential CPU Baseline"
+if args.mode == "gpu":
+    mode_title = "LBM Fluid Dynamics Dashboard - Optimized Parallel GPU"
 else:
-    mode_title += " - Fluid Velocity Verification Pass"
+    mode_title = "LBM Fluid Dynamics Dashboard - Sequential CPU Baseline"
 
 # Grid plot layout figure
 fig, axs = plt.subplots(2, 3, figsize=(18, 9.5))
@@ -96,6 +98,7 @@ summary_text = (
     "--------------------------------------\n"
     f"Grid Lattice Resolution: {initial_data.shape[1]} x {initial_data.shape[0]}\n"
     f"Total Evaluated Time Steps: 1000\n"
+    f"Engine Infrastructure: {args.mode.upper()}\n"
     "Collision Model: D2Q9 BGK Relaxation\n"
     "Inflow Condition: Zou-He Velocity\n"
     "Outflow Condition: Convective Wave"
@@ -131,6 +134,6 @@ ani = animation.FuncAnimation(
     fig, update_dashboard, frames=num_frames, blit=True
 )
 
-master_output_path = os.path.join(DATA_DIR, "master_fluid_dashboard.gif")
 ani.save(master_output_path, writer="pillow", fps=10)
+print(f"Animation generated successfully.")
 plt.close(fig)

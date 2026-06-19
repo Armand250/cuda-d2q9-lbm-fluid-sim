@@ -114,7 +114,7 @@ void generate_obstacle_mask(bool* h_solid, ObstacleType type) {
 }
 
 void save_gpu_density_csv(DeviceGridSoA d_grid, const bool* h_solid, int step, size_t plane_bytes, std::string folder, double pure_time, double pure_mlups) {
-    char filename[256]; sprintf(filename, "output/%s/frame_%04d.csv", folder.c_str(), step);
+    char filename[256]; sprintf(filename, "output/gpu/%s/frame_%04d.csv", folder.c_str(), step);
     std::ofstream file(filename);
     file << "# " << pure_time << " s , " << pure_mlups << " MLUPS\n";
     float* h_temp_f[9]; for (int i = 0; i < 9; i++) { h_temp_f[i] = (float*)malloc(plane_bytes); cudaMemcpy(h_temp_f[i], d_grid.f[i], plane_bytes, cudaMemcpyDeviceToHost); }
@@ -151,7 +151,7 @@ int main() {
         std::cout << "\n========================================================" << std::endl;
         std::cout << "SCENE [" << scene + 1 << "/" << COUNT << "]: " << name << std::endl;
         std::cout << "========================================================" << std::endl;
-        std::string mkdir_cmd = "mkdir -p output/" + name; int r = system(mkdir_cmd.c_str());
+        std::string mkdir_cmd = "mkdir -p output/gpu/" + name; int r = system(mkdir_cmd.c_str());
         generate_obstacle_mask(h_solid, (ObstacleType)scene);
         cudaMemcpy(d_solid, h_solid, grid_size * sizeof(bool), cudaMemcpyHostToDevice);
 

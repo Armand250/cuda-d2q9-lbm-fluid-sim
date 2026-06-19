@@ -171,7 +171,7 @@ void cpu_lbm_step_soa() {
 }
 
 void save_density_csv(int step, std::string folder, double pure_time, double pure_mlups) {
-    char filename[256]; sprintf(filename, "output/%s/frame_%04d.csv", folder.c_str(), step);
+    char filename[256]; sprintf(filename, "output/cpu/%s/frame_%04d.csv", folder.c_str(), step);
     std::ofstream file(filename);
 
     if (!file.is_open()) {
@@ -205,9 +205,8 @@ int main() {
         std::cout << "\n========================================================" << std::endl;
         std::cout << "SCENE [" << scene + 1 << "/" << COUNT << "]: " << name << std::endl;
         std::cout << "========================================================" << std::endl;
-        std::string mkdir_cmd = "mkdir -p output/" + name; int r = system(mkdir_cmd.c_str());
+        std::string mkdir_cmd = "mkdir -p output/cpu/" + name; int r = system(mkdir_cmd.c_str());
         generate_obstacle_mask((ObstacleType)scene); reset_fluid_field();
-
         auto start_time = std::chrono::high_resolution_clock::now();
         for (int step = 0; step < STEPS; step++) { cpu_lbm_step_soa(); std::swap(grid_src, grid_dst); }
         auto end_time = std::chrono::high_resolution_clock::now();
