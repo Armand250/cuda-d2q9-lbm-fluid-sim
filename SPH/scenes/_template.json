@@ -1,0 +1,47 @@
+{
+  "container": {
+    "width": 1.0,
+    "height": 1.0
+  },
+  "physics": {
+    "gravity": {"x": 0.0, "y": -9.81},
+    "time_step": 0.001,
+    "max_frames": 1000
+  },
+  "fluid_properties": {
+    "rest_density": 1000.0,
+    "viscosity": 0.05,
+    "particle_mass": 0.02,
+    "smoothing_radius": 0.04
+  },
+  "fluid_sources": [
+    {
+      "type": "block",
+      "bounds": {"x_min": 0.0, "x_max": 0.2, "y_min": 0.0, "y_max": 0.8}
+    },
+    {
+      "type": "emitter",
+      "bounds": {"x_min": 0.4, "x_max": 0.6, "y_min": 0.9, "y_max": 0.95},
+      "direction": {"x": 1.0, "y": -0.2},
+      "speed": 5.0,
+      "rate": 1000, 
+      "active_until": 3.0 
+    }
+  ],
+  "obstacles": [
+    {
+      "type": "rectangle",
+      "bounds": {"x_min": 0.45, "x_max": 0.55, "y_min": 0.0, "y_max": 0.4}
+    },
+    {
+      "type": "circle",
+      "center": {"x": 0.5, "y": 0.2},
+      "radius": 0.1
+    },
+    {
+      "type": "line",
+      "start": {"x": 0.45, "y": 0.0},
+      "end": {"x": 0.55, "y": 0.4}
+    }
+  ]
+}
