@@ -1,5 +1,5 @@
-./LBM-D2Q9/naive_d2q9
-./LBM-D2Q9/optimized_d2q9
-./SPH/results/
-./SPH/obj/
-./SPH/bin/
+LBM-D2Q9/naive_d2q9
+LBM-D2Q9/optimized_d2q9
+SPH/results/
+SPH/obj/
+SPH/bin/
